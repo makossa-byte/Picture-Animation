@@ -86,7 +86,7 @@ const App: React.FC = () => {
                         {isLoading ? (
                             <Loader message={loadingMessage} />
                         ) : error ? (
-                            <ErrorDisplay message={error} />
+                            <ErrorDisplay message={error} onRetry={handleGenerateClick} />
                         ) : videoUrl ? (
                             <VideoPlayer src={videoUrl} />
                         ) : (

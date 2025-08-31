@@ -1,5 +1,7 @@
 {
   "name": "Picture Animator AI",
   "description": "An AI-powered application to bring your static pictures to life. Upload an image, provide a prompt, and watch as Gemini generates a stunning animation.",
-  "requestFramePermissions": []
+  "requestFramePermissions": [
+    "camera"
+  ]
 }

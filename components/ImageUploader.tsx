@@ -3,9 +3,10 @@ import React, { useRef, useState, useCallback } from 'react';
 interface ImageUploaderProps {
     onImageChange: (file: File | null) => void;
     imageUrl: string | null;
+    imageFile: File | null;
 }
 
-export const ImageUploader: React.FC<ImageUploaderProps> = ({ onImageChange, imageUrl }) => {
+export const ImageUploader: React.FC<ImageUploaderProps> = ({ onImageChange, imageUrl, imageFile }) => {
     const fileInputRef = useRef<HTMLInputElement>(null);
     const videoRef = useRef<HTMLVideoElement>(null);
     const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -72,6 +73,16 @@ export const ImageUploader: React.FC<ImageUploaderProps> = ({ onImageChange, ima
         }
     }, [onImageChange, handleCloseCamera]);
 
+    const handleDownload = () => {
+        if (!imageUrl || !imageFile) return;
+        const link = document.createElement('a');
+        link.href = imageUrl;
+        link.download = imageFile.name;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    };
+
     return (
         <>
             <div 
@@ -88,21 +99,40 @@ export const ImageUploader: React.FC<ImageUploaderProps> = ({ onImageChange, ima
                 {imageUrl ? (
                     <img src={imageUrl} alt="Preview" className="w-full h-full object-contain rounded-lg p-1" />
                 ) : (
-                    <div className="text-center">
-                        <svg xmlns="http://www.w3.org/2000/svg" className="mx-auto h-12 w-12" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                        </svg>
-                        <p className="mt-2">Click to upload an image</p>
-                        <p className="text-xs text-gray-500 my-2">or</p>
-                         <button 
-                            onClick={handleOpenCamera} 
-                            className="px-4 py-2 bg-purple-600 text-white rounded-md hover:bg-purple-700 transition-colors z-10"
-                        >
-                            Use Camera
-                        </button>
+                    <div className="relative w-full h-full flex flex-col items-center justify-center overflow-hidden rounded-lg">
+                        <img 
+                            src="https://images.unsplash.com/photo-1696208261241-e13710330945?q=80&w=800&auto=format&fit=crop" 
+                            alt="AI placeholder" 
+                            className="absolute inset-0 w-full h-full object-cover opacity-20"
+                        />
+                        <div className="relative z-10 text-center p-4">
+                            <p className="mt-2 text-white font-semibold">Click to upload an image</p>
+                            <p className="text-xs text-gray-300 my-2">or</p>
+                             <button 
+                                onClick={handleOpenCamera} 
+                                className="px-4 py-2 bg-purple-600 text-white rounded-md hover:bg-purple-700 transition-colors z-10"
+                            >
+                                Use Camera
+                            </button>
+                        </div>
                     </div>
                 )}
             </div>
+
+            {imageUrl && imageFile && (
+                <div className="mt-2 p-2 bg-gray-700 rounded-lg flex items-center justify-between text-sm">
+                    <span className="text-gray-300 truncate font-mono text-xs" title={imageFile.name}>
+                        {imageFile.name}
+                    </span>
+                    <button
+                        onClick={handleDownload}
+                        className="ml-4 px-5 py-2.5 bg-green-600 text-white font-bold rounded-lg hover:bg-green-700 transition-all duration-300 transform hover:scale-105 shadow-lg flex items-center gap-2"
+                    >
+                        <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" /></svg>
+                        <span>Download Image</span>
+                    </button>
+                </div>
+            )}
 
             {isCameraOpen && (
                 <div className="fixed inset-0 bg-black bg-opacity-80 flex flex-col items-center justify-center z-50 p-4">

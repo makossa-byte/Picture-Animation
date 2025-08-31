@@ -78,7 +78,7 @@ const App: React.FC = () => {
             <main className="w-full max-w-4xl mx-auto flex flex-col gap-8 mt-8">
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
                     <div className="flex flex-col gap-4 p-6 bg-gray-800 rounded-2xl shadow-lg">
-                       <ImageUploader onImageChange={handleImageChange} imageUrl={imageUrl} />
+                       <ImageUploader onImageChange={handleImageChange} imageUrl={imageUrl} imageFile={imageFile} />
                        <PromptInput prompt={prompt} setPrompt={setPrompt} disabled={isLoading} />
                        <ActionButton onClick={handleGenerateClick} disabled={isLoading || !imageFile || !prompt} />
                     </div>
